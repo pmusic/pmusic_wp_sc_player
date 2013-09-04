@@ -1,0 +1,3 @@
+[submodule "lib/php-sc"]
+	path = lib/php-sc
+	url = https://github.com/mptre/php-soundcloud.git
