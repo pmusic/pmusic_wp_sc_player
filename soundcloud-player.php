@@ -16,6 +16,7 @@ class SoundCloudPlayer {
     add_action('admin_menu', array($this, 'plugin_menu'));
     add_shortcode('sc', array($this, 'sc_print'));
     wp_register_script('fsc_player', plugins_url('js/fsc_player.js', __FILE__));
+    wp_register_script('sc_sdk', 'http://connect.soundcloud.com/sdk.js');
     wp_register_style('fsc_player', plugins_url('css/fsc_player.css', __FILE__));
   }
 
@@ -54,7 +55,7 @@ class SoundCloudPlayer {
       $this->client_id = $options['client_id'];
       
       $playlist = $this->get_playlist($resource);
-      var_dump($playlist);
+      var_dump(json_decode($playlist));
       return Player::big_player($playlist, $this->client_id);
       
     } else {
@@ -101,7 +102,8 @@ class Track {
 class Player {
   static function big_player($json_pl, $client_id){
     $pl = json_decode($json_pl);  
-      
+    
+    wp_enqueue_script('sc_sdk');  
     wp_enqueue_script('fsc_player');
     wp_enqueue_style('fsc_player');
     

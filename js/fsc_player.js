@@ -6,10 +6,11 @@ jQuery(document).ready(function(){
 //function fsc_playlist_player(json){
 fsc_playlist_player = function(json, client_id){
   var play = function(){
-     alert(playlist.id); 
-  };
-  var init = function(){
-    SC.initialize({client_id: client_id});
+     track = playlist.tracks[0].uri;
+     alert(track); 
+     SC.stream(track, function(sound){
+       sound.play();
+     });
   };
   
   var playlist = JSON.parse(json);
@@ -20,6 +21,6 @@ fsc_playlist_player = function(json, client_id){
   status.html("we've got javascript!");
   var playbutton = jQuery('#fsc-' + playlist.id + ' .play');
   playbutton.click(play);
- 
   
+  SC.initialize({client_id: client_id});
 };
