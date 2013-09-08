@@ -2,7 +2,7 @@
 /*
 Plugin Name: PM SoundCloud Player
 Plugin URI: 
-Description: SoundCloud Player that is designed to load quickly and look cool.
+Description: SoundCloud Player that is designed to load quickly, look cool, and behave reasonably when the user does not have javascript.
 Version: 0.1 
 Author: Alex Bundy 
 Author URI: http://www.planetariummusic.com/
@@ -15,7 +15,7 @@ class PMSCPlayer {
     add_action('admin_init', array($this, 'admin_init'));
     add_action('admin_menu', array($this, 'plugin_menu'));
     add_shortcode('pmsc', array($this, 'pmsc_print'));
-    wp_register_script('fsc_player', plugins_url('js/pmsc_player.js', __FILE__));
+    wp_register_script('pmsc_player', plugins_url('js/pmsc_player.js', __FILE__));
     wp_register_script('sc_sdk', 'http://connect.soundcloud.com/sdk.js');
     wp_register_style('pmsc_player', plugins_url('css/pmsc_player.css', __FILE__));
     register_activation_hook( __FILE__, array($this, 'db_init'));
@@ -84,13 +84,13 @@ class PMSCPlayer {
     $pl = json_decode($json_pl);  
     
     wp_enqueue_script('sc_sdk');  
-    wp_enqueue_script('fsc_player');
-    wp_enqueue_style('fsc_player');
+    wp_enqueue_script('pmsc_player');
+    wp_enqueue_style('pmsc_player');
 
-    echo $img_url = preg_replace('/large/', 't500x500', $pl->artwork_url);
+    $img_url = preg_replace('/large/', 't500x500', $pl->artwork_url);
 
     
-    $r = '<div id="pmsc-' . $pl->id . '" class="pmsc-500" style="' . "background-image:url('" . $img_url . "')\">";
+    $r = '<div id="pmsc-' . $pl->id . '" class="pmsc-player pmsc-500" style="' . "background-image:url('" . $img_url . "')\">";
     //$r .= '<div class="title">' . $pl->title . '</div>';
     $r .= '<div class="status">Loading... or no javascript!</div>';
     //$r .= '<img src="' . $img_url . '">';

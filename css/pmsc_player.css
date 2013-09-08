@@ -1,25 +1,26 @@
 /*
  * pmsc_player.css
  * 
- * stylesheet for the Fancy Sound Cloud Player
+ * stylesheet for the PM Sound Cloud Player
  */
 
-.pmsc-500  {
+.pmsc-player {
+  background-color:gray;
   position:relative;
+  margin:auto; 
+}
+.pmsc-500  {
   width:500px;
   height:500px;
-  background-color:gray;
 }
 
-
-.pmsc-500 .status {
+.pmsc-player .status {
   position:absolute;
   top:50%;
-  margin-left:auto;
-  margin-right:auto;
+  margin:auto;
 }
 
-.pmsc-500 .play  {
+.pmsc-player .play  {
   position:absolute;
   bottom:0px;
   background-color:green;
