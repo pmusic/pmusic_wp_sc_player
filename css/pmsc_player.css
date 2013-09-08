@@ -1,25 +1,25 @@
 /*
- * fsc_player.css
+ * pmsc_player.css
  * 
  * stylesheet for the Fancy Sound Cloud Player
  */
 
-.fsc-big  {
+.pmsc-500  {
   position:relative;
-  width:400px;
-  height:400px;
+  width:500px;
+  height:500px;
   background-color:gray;
 }
 
 
-.fsc-big .status {
+.pmsc-500 .status {
   position:absolute;
   top:50%;
   margin-left:auto;
   margin-right:auto;
 }
 
-.fsc-big .play  {
+.pmsc-500 .play  {
   position:absolute;
   bottom:0px;
   background-color:green;
