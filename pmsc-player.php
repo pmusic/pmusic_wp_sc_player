@@ -58,7 +58,7 @@ class PMSCPlayer {
         return "Couldn't fetch JSON";
       }
       
-      var_dump(json_decode($playlist));
+      //var_dump(json_decode($playlist));
       return $this->big_player($playlist);
       
     } else {
