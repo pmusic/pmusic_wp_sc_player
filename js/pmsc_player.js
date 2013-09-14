@@ -13,7 +13,8 @@ pmsc_playlist_player = function(json, client_id){
   $tracklist = jQuery('<div id="tracklist"></div>');
   $player.append( $tracklist );
   for(var n=0; n<playlist.tracks.length; n++){
-    $tracklist.append(jQuery('<div class="track" data-trackno="' + n + '">' + n + '</div>')); 
+    var $track = jQuery('<div class="track" data-trackno="' + n + '">' + n + '</div>');
+    $tracklist.append( $track ); 
   }
   
   var track = playlist.tracks[0].uri;
@@ -32,4 +33,8 @@ pmsc_playlist_player = function(json, client_id){
       var playbutton = jQuery('#pmsc-' + playlist.id + ' .play');
       playbutton.click(function(){sound.togglePause();});
     });
+    
+    $testbutton = jQuery('<button id="test">test</button>');
+    $testbutton.click(function(){console.log(stream);});
+    $player.append($testbutton);
 };

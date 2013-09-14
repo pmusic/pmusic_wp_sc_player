@@ -8,9 +8,16 @@ Author: Alex Bundy
 Author URI: http://www.planetariummusic.com/
 License: TODO 
 */
+
+global $wpdb;
 require_once( 'pmsc-config.php' );
+
+/**
+ * 
+ * TODO create way to invalidate cache.
+ */
 class PMSCPlayer {
-	
+
   function  __construct() {
     add_action('admin_init', array($this, 'admin_init'));
     add_action('admin_menu', array($this, 'plugin_menu'));
@@ -58,7 +65,6 @@ class PMSCPlayer {
         return "Couldn't fetch JSON";
       }
       
-      //var_dump(json_decode($playlist));
       return $this->big_player($playlist);
       
     } else {
@@ -70,14 +76,25 @@ class PMSCPlayer {
    * @return string json. FALSE if couldn't fetch json.
    */
   function get_playlist($resource){
-    echo $url = 'http://api.soundcloud.com/playlists/' . $resource . '.json?client_id=' . $this->client_id;
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $json = curl_exec($ch); 
-    // TODO make sure we got a good http response
-    curl_close($ch);
-
-    return $json;
+    global $wpdb; 
+    $result = $wpdb->get_row('SELECT json from ' . PMSC_PLAYER_DB . ' WHERE id=' . $resource );
+  
+  
+    if( $result === null ){ 
+      $url = 'http://api.soundcloud.com/playlists/' . $resource . '.json?client_id=' . $this->client_id;
+      $ch = curl_init($url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $json = curl_exec($ch); 
+      // TODO make sure we got a good http response
+      curl_close($ch);
+  
+      // cache result in database
+      $wpdb->insert( PMSC_PLAYER_DB, array( 'id' => $resource, 'json' => $json ), array( '%d', '%s' ) );
+  
+      return $json;
+    } else {
+      return $result->json;
+    }
   }
 
   function big_player($json_pl){
@@ -91,11 +108,8 @@ class PMSCPlayer {
 
     
     $r = '<div id="pmsc-' . $pl->id . '" class="pmsc-player pmsc-500" style="' . "background-image:url('" . $img_url . "')\">";
-    //$r .= '<div class="title">' . $pl->title . '</div>';
     $r .= '<div class="status">Loading... or no javascript!</div>';
-    //$r .= '<img src="' . $img_url . '">';
     $r .= '</div>';
-    //$r .= "<script>fsc_playlist_player('" . $json_pl . "');</script>";
     $r .= '<script>';
     $r .= "jQuery(document).ready(function(){ pmsc_playlist_player('" . $json_pl . "', '{$this->client_id}');});";
     $r .= '</script>';
@@ -109,6 +123,7 @@ class PMSCPlayer {
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     $sql = "CREATE TABLE " . PMSC_PLAYER_DB . "(
               id int unsigned not null,
+              fetch_time timestamp,
               json text, 
               UNIQUE KEY  id (id));";
               
