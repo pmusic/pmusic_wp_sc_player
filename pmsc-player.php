@@ -22,10 +22,18 @@ class PMSCPlayer {
     add_action('admin_init', array($this, 'admin_init'));
     add_action('admin_menu', array($this, 'plugin_menu'));
     add_shortcode('pmsc', array($this, 'pmsc_print'));
+    add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+   register_activation_hook( __FILE__, array($this, 'db_init'));
+  }
+  
+  function enqueue_scripts(){
     wp_register_script('pmsc_player', plugins_url('js/pmsc_player.js', __FILE__));
-    wp_register_script('sc_sdk', 'http://connect.soundcloud.com/sdk.js');
+    if( WP_DEBUG ){
+      wp_register_script('soundmanager2', plugins_url('js/soundmanager2.js', __FILE__));
+    } else {
+      wp_register_script('soundmanager2', plugins_url('js/soundmanager2-nodebug-jsmin.js', __FILE__));
+    }
     wp_register_style('pmsc_player', plugins_url('css/pmsc_player.css', __FILE__));
-    register_activation_hook( __FILE__, array($this, 'db_init'));
   }
 
 	function plugin_menu(){
@@ -73,6 +81,8 @@ class PMSCPlayer {
     }
   }
   /**
+   * Returns the json for the playlist. Also handles cacheing 
+   *
    * @return string json. FALSE if couldn't fetch json.
    */
   function get_playlist($resource){
@@ -88,9 +98,9 @@ class PMSCPlayer {
       // TODO make sure we got a good http response
       curl_close($ch);
   
-      // cache result in database
+      // store result in database
       $wpdb->insert( PMSC_PLAYER_DB, array( 'id' => $resource, 'json' => $json ), array( '%d', '%s' ) );
-  
+      
       return $json;
     } else {
       return $result->json;
@@ -100,15 +110,15 @@ class PMSCPlayer {
   function big_player($json_pl){
     $pl = json_decode($json_pl);  
     
-    wp_enqueue_script('sc_sdk');  
     wp_enqueue_script('pmsc_player');
+    wp_enqueue_script('soundmanager2');
     wp_enqueue_style('pmsc_player');
 
     $img_url = preg_replace('/large/', 't500x500', $pl->artwork_url);
 
     
     $r = '<div id="pmsc-' . $pl->id . '" class="pmsc-player pmsc-500" style="' . "background-image:url('" . $img_url . "')\">";
-    $r .= '<div class="status">Loading... or no javascript!</div>';
+    $r .= '<div class="status">Downloadable on soundcloud at ' . $pl->permalink_url . '</div>';
     $r .= '</div>';
     $r .= '<script>';
     $r .= "jQuery(document).ready(function(){ pmsc_playlist_player('" . $json_pl . "', '{$this->client_id}');});";
