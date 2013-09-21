@@ -26,3 +26,14 @@
   background-color:green;
   padding:5px;
 }
+.pmsc-player .track {
+  border-bottom: 1px solid black;
+  opacity:0.5;
+}
+.pmsc-player .notplaying {
+  background-color: white;
+}
+.pmsc-player .playing {
+  background-color:green;
+}
+

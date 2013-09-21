@@ -83,6 +83,7 @@ class PMSCPlayer {
   /**
    * Returns the json for the playlist. Also handles cacheing 
    *
+   * @param resource string -- id of the soundcloud playlist
    * @return string json. FALSE if couldn't fetch json.
    */
   function get_playlist($resource){
@@ -121,11 +122,11 @@ class PMSCPlayer {
     $r .= '<div class="status">Downloadable on soundcloud at ' . $pl->permalink_url . '</div>';
     $r .= '</div>';
     $r .= '<script>';
-    $r .= "jQuery(document).ready(function(){ pmsc_playlist_player('" . $json_pl . "', '{$this->client_id}');});";
+    $r .= "jQuery(document).ready(function(){ pmsc_playlist_player = new PMSCPlayer('{$this->client_id}'); pmsc_playlist_player.addPlayer('$json_pl');});";
     $r .= '</script>';
     return $r;
- 
   }
+
   /**
    * create/update database table
    */
