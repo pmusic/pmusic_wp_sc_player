@@ -7,19 +7,16 @@ PMSCPlayer = function( client_id ){
   
   var client_id = client_id;
   var playlists = new Array();  
-  var currently_playing = null;
+  var current_playlist = 0;
+  var current_track = 0;
+  
   soundManager.setup( {
       url: '/wp-content/plugins/pmsc-player/swf',
       preferFlash: false
   });
  
   soundManager.onready(function(){
-    console.log('playlists:');
-    console.log(playlists);
-    //create sounds
-    for( var x in playlists ){
-     
-    }
+    console.log('ready');
   });
 
   /* 
@@ -27,36 +24,47 @@ PMSCPlayer = function( client_id ){
    * @param object
    */
   var loadPlayList = function(pid){
-    for( var y = 0; y < playlists[pid].tracks.length; y++ ){  
+    var y = 0;
+    for( y; y < playlists[pid].tracks.length; y++ ){  
+      playlists[pid].tracks[y].tid = 't' + playlists[pid].tracks[y].id;
         soundManager.createSound({
-          id: 'p' + String( playlists[pid].tracks[y].id ),
+          id: 't' + String( playlists[pid].tracks[y].id ),
           url: playlists[pid].tracks[y].stream_url + '?client_id=' + client_id,
-          onfinish: function(){console.log('TODO: move to next track');},
-          onplay: function(){console.log('id' + this.id + ' is playing');}
+          onfinish: next,
+          onplay: function(){
+              console.log('id' + this.id + ' is playing');
+              current_playlist = pid
+               }
         });
       }
   };
 
   this.addPlayer = function( json ){
     var p = JSON.parse( json );
-    var pid = 'p' + String(p.id); 
-    playlists[pid] = p;
+    p.pid = 'p' + String(p.id); 
+    playlists[p.pid] = p;
    
-    soundManager.onready(function(){loadPlayList(pid);});
+    soundManager.onready(function(){loadPlayList(p.pid);});
 
     // set up player
     
     p.$player = jQuery('#pmsc-' + p.id);
     p.$controlBox = jQuery('<div class="controlbox"></div>');
-    p.$controlBox.appendTo(playlists[pid].$player);
+    p.$controlBox.appendTo(playlists[p.pid].$player);
     
-    p.$playButton = jQuery('<div data-playlist="' + pid + '" class="play">PLAY</div>');
+    p.$playButton = jQuery('<div class="play">PLAY</div>');
+    p.$playButton.data('playlist', p.pid );
     p.$playButton.on('click', playPause); 
     p.$playButton.appendTo(p.$controlBox);
     
+    p.$nextButton = jQuery('<div class="next">NEXT</div>');
+    p.$nextButton.on('click', next );
+    p.$nextButton.appendTo(p.$controlBox);
+
+
     //create track divs
     for( var c=0; c<p.tracks.length; c++ ){
-      var t_html = '<div class="track notplaying" id="p' + p.tracks[c].id + '">'; 
+      var t_html = '<div class="track notplaying" id="t' + p.tracks[c].id + '">'; 
       t_html += p.tracks[c].title;
       t_html += '</div>';
       var t = jQuery( t_html );
@@ -65,7 +73,7 @@ PMSCPlayer = function( client_id ){
     
 
     j = jQuery('<div>test</div>'); 
-    playlists[pid].$player.append(j);
+    playlists[p.pid].$player.append(j);
     j.on('click', testFunction );
   };
   
@@ -75,30 +83,59 @@ PMSCPlayer = function( client_id ){
   };
   
   var playPause = function(){
-    $this = jQuery(this);
-    if( currently_playing == null ){
-      console.log( $this.data('playlist') );
-      
-      currently_playing = 'p' + playlists[jQuery(this).data('playlist')].tracks[0].id;
+    var $this = jQuery(this);
+    console.log( playlists[$this.data('playlist')] );
+    console.log(current_track);
+    var tid = playlists[$this.data('playlist')].tracks[current_track].tid; 
+    if( $this.data('playlist') != current_playlist ){
+      current_playlist = $this.data('playlist');
+      current_track = 0;
     } 
-    jQuery( '.track' ).removeClass( 'playing' );
-    jQuery('#' + currently_playing).removeClass('notplaying').addClass('playing');
-    console.log('currently_playing:' + currently_playing );
-    soundManager.togglePause( currently_playing );
+    var playstate =soundManager.getSoundById(tid).playState;  
+    if( playstate == 0 ){
+      play();
+    } else if( playstate == 1 ) {
+      pause();    
+    } else {
+      //???
+    }
   };
-  
+ 
+  /*
+   * starts the current track playing
+   */ 
+  var play = function(){
+    var tid = playlists[current_playlist].tracks[current_track].tid; 
+    soundManager.play( tid );
+    jQuery( '.track' ).removeClass( 'playing' ).addClass('notplaying');
+    jQuery('#' + tid ).removeClass('notplaying').addClass('playing');
+  };
+ 
+  /*
+   * pause the playing track
+   */ 
   var pause = function(){
-    
+    soundManager.pause( playlists[current_playlist].tracks[current_track].tid );
+    console.log('write ui stuff!'); 
   };
-  
+ 
+  /*
+   * skips to the next track and plays it
+   */ 
   var next = function(){
+    //check if it's the last track in the playlist playing
+    soundManager.stopAll();
+    if( playlists[current_playlist].tracks[current_track + 1] ==  undefined ){
+      // Clean up ui
+    } else {
+      current_track++;
+      play();
+    }
+  };
+ 
+  var previous = function(){
     
   };
-  
-  var loadAndPlay = function(){
-    
-  };
-  
   // test -- create button for each track
   /*
   $tracklist = jQuery('<div id="tracklist"></div>');

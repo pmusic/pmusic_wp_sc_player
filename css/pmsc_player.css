@@ -21,9 +21,17 @@
 }
 
 .pmsc-player .play  {
+  width:60px;
   position:absolute;
   bottom:0px;
   background-color:green;
+  padding:5px;
+}
+.pmsc-player .next {
+  position:absolute;
+  bottom:0px;
+  left:60px;
+  background-color:#330033;  
   padding:5px;
 }
 .pmsc-player .track {
