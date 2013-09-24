@@ -33,12 +33,15 @@ PMSCPlayer = function( client_id ){
           onfinish: next,
           onplay: function(){
               console.log('id' + this.id + ' is playing');
-              current_playlist = pid
-               }
+              current_playlist = pid;
+             },
+           whileplaying: function(){
+             jQuery('.timebox').text(minSec(this.position));
+           }
         });
       }
   };
-
+  
   this.addPlayer = function( json ){
     var p = JSON.parse( json );
     p.pid = 'p' + String(p.id); 
@@ -61,11 +64,17 @@ PMSCPlayer = function( client_id ){
     p.$nextButton.on('click', next );
     p.$nextButton.appendTo(p.$controlBox);
 
+    p.$timeBox = jQuery('<div class="timebox">TIME</div>');
+    p.$timeBox.appendTo(p.$controlBox);
 
     //create track divs
     for( var c=0; c<p.tracks.length; c++ ){
       var t_html = '<div class="track notplaying" id="t' + p.tracks[c].id + '">'; 
       t_html += p.tracks[c].title;
+      var duration = p.tracks[c].duration;
+
+      t_html += ' ('  + minSec(duration) + ')';
+      
       t_html += '</div>';
       var t = jQuery( t_html );
       t.appendTo(p.$controlBox);
@@ -80,6 +89,17 @@ PMSCPlayer = function( client_id ){
   //test function
   var testFunction = function(){
     soundManager.onReady(function(){console.log('ran onready!');});
+  };
+  
+  /*
+   * @param int time in miliseconds
+   * @return string time in "min:sec" format
+   */ 
+  var minSec = function(duration){
+      var min = Math.floor(duration/60000); 
+      var sec = Math.round((duration%60000)/1000);   
+      sec = (sec < 10) ? '0' + sec : sec;
+      return min + ':' + sec;
   };
   
   var playPause = function(){
