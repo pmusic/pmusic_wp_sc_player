@@ -37,6 +37,8 @@ PMSCPlayer = function( client_id ){
              },
            whileplaying: function(){
              jQuery('.timebox').text(minSec(this.position));
+             var duration = this.readyState==3 ? this.duration : this.durationEstimate;
+             jQuery( '.played-time' ).width( Math.floor( ( this.position / duration ) * 450 ) );
            }
         });
       }
@@ -74,23 +76,14 @@ PMSCPlayer = function( client_id ){
       var duration = p.tracks[c].duration;
 
       t_html += ' ('  + minSec(duration) + ')';
-      
+      t_html += '<div class="total-time"></div>';
       t_html += '</div>';
       var t = jQuery( t_html );
       t.appendTo(p.$controlBox);
     }
     
+  };
 
-    j = jQuery('<div>test</div>'); 
-    playlists[p.pid].$player.append(j);
-    j.on('click', testFunction );
-  };
-  
-  //test function
-  var testFunction = function(){
-    soundManager.onReady(function(){console.log('ran onready!');});
-  };
-  
   /*
    * @param int time in miliseconds
    * @return string time in "min:sec" format
@@ -127,8 +120,11 @@ PMSCPlayer = function( client_id ){
   var play = function(){
     var tid = playlists[current_playlist].tracks[current_track].tid; 
     soundManager.play( tid );
+    $track = jQuery( '#' + tid );
     jQuery( '.track' ).removeClass( 'playing' ).addClass('notplaying');
-    jQuery('#' + tid ).removeClass('notplaying').addClass('playing');
+    $track.removeClass('notplaying').addClass('playing');
+    jQuery( '.played-time' ).remove();
+    jQuery('#' + tid + ' .total-time').append( jQuery('<div class="played-time"></div>'));
   };
  
   /*

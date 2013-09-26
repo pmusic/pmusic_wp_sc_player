@@ -37,6 +37,21 @@
 .pmsc-player .track {
   border-bottom: 1px solid black;
   opacity:0.5;
+  height: 50px;
+}
+
+.total-time {
+  position:relative;
+  width:450px;
+  height:25px;
+  bottom:0;
+  border:1px solid gray;
+}
+.played-time {
+  position:relative;
+  height:100%;
+  width:0; 
+  background-color:purple;
 }
 .pmsc-player .notplaying {
   background-color: white;
