@@ -52,9 +52,11 @@ PMSCPlayer = function( client_id ){
     soundManager.onready(function(){loadPlayList(p.pid);});
 
     // set up player
+   
+    jQuery('.status').remove();
     
     p.$player = jQuery('#pmsc-' + p.id);
-    p.$controlBox = jQuery('<div class="controlbox"></div>');
+    p.$controlBox = jQuery('<div class="control-box"></div>');
     p.$controlBox.appendTo(playlists[p.pid].$player);
     
     p.$playButton = jQuery('<div class="play">PLAY</div>');
