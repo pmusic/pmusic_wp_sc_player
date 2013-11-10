@@ -36,7 +36,7 @@ PMSCPlayer = function( client_id ){
               current_playlist = pid;
              },
            whileplaying: function(){
-             jQuery('.timebox').text(minSec(this.position));
+             jQuery('.playing .timeplayed').text(minSec(this.position) + '/');
              var duration = this.readyState==3 ? this.duration : this.durationEstimate;
              jQuery( '.played-time' ).width( Math.floor( ( this.position / duration ) * 450 ) );
            }
@@ -68,22 +68,21 @@ PMSCPlayer = function( client_id ){
     p.$nextButton.on('click', next );
     p.$nextButton.appendTo(p.$controlBox);
 
-    p.$timeBox = jQuery('<div class="timebox">TIME</div>');
-    p.$timeBox.appendTo(p.$controlBox);
-
     //create track divs
     for( var c=0; c<p.tracks.length; c++ ){
       var t_html = '<div class="track notplaying" id="t' + p.tracks[c].id + '">'; 
+      t_html += (c+1) + ') ';
       t_html += p.tracks[c].title;
       var duration = p.tracks[c].duration;
 
-      t_html += ' ('  + minSec(duration) + ')';
+      t_html += ' (<span class="timeplayed"></span>'  + minSec(duration) + ')';
       t_html += '<div class="total-time"></div>';
       t_html += '</div>';
       var t = jQuery( t_html );
       t.appendTo(p.$controlBox);
     }
     
+    p.$controlBox.append('<div class="footer">Sounds hosted on <a href="http://soundcloud.com/">SoundCloud</a></div>');
   };
 
   /*
@@ -123,6 +122,7 @@ PMSCPlayer = function( client_id ){
     var tid = playlists[current_playlist].tracks[current_track].tid; 
     soundManager.play( tid );
     $track = jQuery( '#' + tid );
+    
     jQuery( '.track' ).removeClass( 'playing' ).addClass('notplaying');
     $track.removeClass('notplaying').addClass('playing');
     jQuery( '.played-time' ).remove();

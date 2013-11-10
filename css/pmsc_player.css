@@ -27,38 +27,42 @@
 
 .pmsc-player .play  {
   width:60px;
-  /*
-  position:absolute;
-  bottom:0px;
-  */
   background-color:green;
-  padding:5px;
+  padding:0 5px;
   cursor:pointer;
+  float:left;
 }
 .pmsc-player .next {
   width:60px;
-  /*
-  position:absolute;
-  bottom:0px;
-  */
   cursor:pointer;
-  left:60px;
   background-color:#330033;  
-  padding:5px;
+  color:#FFF;
+  padding:0 5px;
+  float:left;
 }
+
 .pmsc-player .track {
   border-top: 1px solid black;
   opacity:0.5;
-  height: 50px;
   width:500px;
+  clear:both;
 }
 
 .total-time {
   position:relative;
   width:450px;
-  height:25px;
   bottom:0;
-  border:1px solid gray;
+  border-top:1px solid #333;
+  border-right:1px solid #333;
+  transition: height 2s;
+  -webkit-transition: height 2s;
+}
+.notplaying .total-time {
+  display: none;
+  height:0;
+}
+.playing .total-time {
+  height:10px;
 }
 .played-time {
   position:relative;
@@ -67,9 +71,24 @@
   background-color:purple;
 }
 .pmsc-player .notplaying {
-  background-color: white;
+  background-color:white;
 }
 .pmsc-player .playing {
+  color:white;
   background-color:green;
 }
+.playing .timeplayed {
+  display:inline;
+}
+.notplaying .timeplayed {
+  display:none;
+}
 
+.pmsc-player .footer {
+  width:100%;
+  color:#EEE;
+  background-color:black;
+  text-align:right;
+  padding:0 5px;
+  font-size:80%;
+}
