@@ -17,6 +17,34 @@
 .control-box {
   position:absolute;
   bottom:0;
+	display:none;
+}
+
+.big-play {
+	width:16%;
+	height:16%;
+	position:absolute;
+	top:42%;
+	left:42%;
+	margin:auto;
+
+	border-radius:25%;
+	border:2px solid #999999;
+
+	text-align:center;
+	background-color:green;
+	opacity:70%;
+
+	color: #FFFFFF;
+	font-weight:bold;
+	font-size:2em;
+
+	box-shadow: 5px 5px 5px #111111;
+
+
+}
+.big-play:hover {
+  cursor:pointer;
 }
 
 .pmsc-player .status {
@@ -43,7 +71,6 @@
 
 .pmsc-player .track {
   border-top: 1px solid black;
-  opacity:0.5;
   width:500px;
   clear:both;
 }
@@ -68,14 +95,15 @@
   position:relative;
   height:100%;
   width:0; 
-  background-color:purple;
+  background-color:#36679B;
 }
 .pmsc-player .notplaying {
   background-color:white;
+  opacity:0.5;
 }
 .pmsc-player .playing {
   color:white;
-  background-color:green;
+  background-color:#679B36;
 }
 .playing .timeplayed {
   display:inline;

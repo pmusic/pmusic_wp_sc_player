@@ -45,7 +45,7 @@ PMSCPlayer = function( client_id ){
   };
   
   this.addPlayer = function( json ){
-    var p = JSON.parse( json );
+		var p = json;
     p.pid = 'p' + String(p.id); 
     playlists[p.pid] = p;
    
@@ -61,12 +61,23 @@ PMSCPlayer = function( client_id ){
     
     p.$playButton = jQuery('<div class="play">PLAY</div>');
     p.$playButton.data('playlist', p.pid );
-    p.$playButton.on('click', playPause); 
+    p.$playButton.on('click', function(){
+			playPause(p.pid);
+		}); 
     p.$playButton.appendTo(p.$controlBox);
     
     p.$nextButton = jQuery('<div class="next">NEXT</div>');
     p.$nextButton.on('click', next );
     p.$nextButton.appendTo(p.$controlBox);
+
+		p.$bigPlayButton = jQuery('<div class="big-play">PLAY</div>');
+		p.$bigPlayButton.appendTo(p.$player);
+    p.$bigPlayButton.data('playlist', p.pid );
+		p.$bigPlayButton.on('click', function(){
+			p.$controlBox.show('up');
+			p.$bigPlayButton.fadeOut();
+			playPause(p.pid);
+		})
 
     //create track divs
     for( var c=0; c<p.tracks.length; c++ ){
@@ -96,22 +107,27 @@ PMSCPlayer = function( client_id ){
       return min + ':' + sec;
   };
   
-  var playPause = function(){
+  var playPause = function(pid){
     var $this = jQuery(this);
-    console.log( playlists[$this.data('playlist')] );
-    console.log(current_track);
-    var tid = playlists[$this.data('playlist')].tracks[current_track].tid; 
+    console.log( 'pid:' + pid );
+    console.log( 'current track: ' + current_track);
+    var tid = playlists[pid].tracks[current_track].tid; 
+    console.log( 'tid: ' + tid );
     if( $this.data('playlist') != current_playlist ){
-      current_playlist = $this.data('playlist');
+      current_playlist = pid;
       current_track = 0;
     } 
-    var playstate =soundManager.getSoundById(tid).playState;  
-    if( playstate == 0 ){
+    var playstate = soundManager.getSoundById(tid).playState;  
+		var paused = soundManager.getSoundById(tid).paused;
+    if( playstate == 0 || paused ){
+			console.log('play');
       play();
     } else if( playstate == 1 ) {
+			console.log('pause');
       pause();    
     } else {
       //???
+			console.log('neither paused nor playing? Playstate:' + playstate);
     }
   };
  
@@ -134,7 +150,7 @@ PMSCPlayer = function( client_id ){
    */ 
   var pause = function(){
     soundManager.pause( playlists[current_playlist].tracks[current_track].tid );
-    console.log('write ui stuff!'); 
+    console.log('TODO: write ui stuff!'); 
   };
  
   /*

@@ -88,7 +88,10 @@ class PMSCPlayer {
    */
   function get_playlist($resource){
     global $wpdb; 
-    $result = $wpdb->get_row('SELECT json from ' . PMSC_PLAYER_DB . ' WHERE id=' . $resource );
+
+		$playlist_sql = $wpdb->prepare('SELECT json from ' . PMSC_PLAYER_DB . ' WHERE id=%d', $resource );
+		
+    $result = $wpdb->get_row( $playlist_sql );
   
   
     if( $result === null ){ 
@@ -96,8 +99,14 @@ class PMSCPlayer {
       $ch = curl_init($url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       $json = curl_exec($ch); 
-      // TODO make sure we got a good http response
       curl_close($ch);
+
+			if( $json === false ){
+				trigger_error( 'Couldn\t fetch playlist info from soundcloud.', E_USER_ERROR );
+				return;
+			}
+
+			//todo: trim json.	
   
       // store result in database
       $wpdb->insert( PMSC_PLAYER_DB, array( 'id' => $resource, 'json' => $json ), array( '%d', '%s' ) );
@@ -118,12 +127,18 @@ class PMSCPlayer {
     $img_url = preg_replace('/large/', 't500x500', $pl->artwork_url);
 
     
-    $r = '<div id="pmsc-' . $pl->id . '" class="pmsc-player pmsc-500" style="' . "background-image:url('" . $img_url . "')\">";
-    $r .= '<div class="status">Downloadable on soundcloud at ' . $pl->permalink_url . '</div>';
-    $r .= '</div>';
-    $r .= '<script>';
-    $r .= "jQuery(document).ready(function(){ pmsc_playlist_player = new PMSCPlayer('{$this->client_id}'); pmsc_playlist_player.addPlayer('$json_pl');});";
-    $r .= '</script>';
+    $r = <<<EOF
+<div id="pmsc-$pl->id" class="pmsc-player pmsc-500" style="background-image:url('$img_url')">
+</div>
+<div class="status">Download on soundcloud at $pl->permalink_url</div>
+<script>
+var json_$pl->id = $json_pl;
+jQuery(document).ready(function(){  
+	pmsc_playlist_player = new PMSCPlayer('{$this->client_id}'); 
+	pmsc_playlist_player.addPlayer(json_$pl->id);
+});
+</script>
+EOF;
     return $r;
   }
 
