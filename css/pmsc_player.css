@@ -22,13 +22,12 @@
 
 .big-play {
 	width:16%;
-	height:16%;
 	position:absolute;
 	top:42%;
 	left:42%;
 	margin:auto;
 
-	border-radius:25%;
+	border-radius:.5em;
 	border:2px solid #999999;
 
 	text-align:center;
@@ -37,7 +36,7 @@
 
 	color: #FFFFFF;
 	font-weight:bold;
-	font-size:2em;
+	font-size:1.9em;
 
 	box-shadow: 5px 5px 5px #111111;
 
@@ -60,6 +59,7 @@
   cursor:pointer;
   float:left;
 }
+/*
 .pmsc-player .next {
   width:60px;
   cursor:pointer;
@@ -68,6 +68,7 @@
   padding:0 5px;
   float:left;
 }
+*/
 
 .pmsc-player .track {
   border-top: 1px solid black;
@@ -77,7 +78,7 @@
 
 .total-time {
   position:relative;
-  width:450px;
+  width:90%;
   bottom:0;
   border-top:1px solid #333;
   border-right:1px solid #333;
@@ -97,26 +98,46 @@
   width:0; 
   background-color:#36679B;
 }
+.track-controls {
+	float:right;
+	font-size:85%;
+	line-height:1.1;
+	margin:2px;
+}
+.track-controls .playpause,
+.track-controls .next,
+.track-controls .previous {
+	cursor:pointer;
+}
+
 .pmsc-player .notplaying {
-  background-color:white;
-  opacity:0.5;
+  background-color:#EEEEEE;
+  opacity:0.9;
+	font-size:90%;
 }
 .pmsc-player .playing {
-  color:white;
+  color: white;
   background-color:#679B36;
 }
 .playing .timeplayed {
-  display:inline;
+  display: inline;
 }
 .notplaying .timeplayed {
-  display:none;
+  display: none;
 }
-
+.pmsc-player .notplaying .track-controls {
+	display: none;
+}
+.pmsc-player .playing .track-controls {
+	display: block;
+}
 .pmsc-player .footer {
   width:100%;
   color:#EEE;
   background-color:black;
-  text-align:right;
   padding:0 5px;
   font-size:80%;
+}
+.pmsc-player .footer .hosted  {
+	float:right;
 }

@@ -134,7 +134,9 @@ class PMSCPlayer {
 <script>
 var json_$pl->id = $json_pl;
 jQuery(document).ready(function(){  
-	pmsc_playlist_player = new PMSCPlayer('{$this->client_id}'); 
+	if( typeof pmsc_playlist_player == 'undefined' ){	
+		pmsc_playlist_player = new PMSCPlayer('{$this->client_id}'); 
+	}
 	pmsc_playlist_player.addPlayer(json_$pl->id);
 });
 </script>

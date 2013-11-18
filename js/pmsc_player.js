@@ -9,7 +9,7 @@ PMSCPlayer = function( client_id ){
   var playlists = new Array();  
   var current_playlist = 0;
   var current_track = 0;
-  
+
   soundManager.setup( {
       url: '/wp-content/plugins/pmsc-player/swf',
       preferFlash: false
@@ -37,15 +37,19 @@ PMSCPlayer = function( client_id ){
              },
            whileplaying: function(){
              jQuery('.playing .timeplayed').text(minSec(this.position) + '/');
-             var duration = this.readyState==3 ? this.duration : this.durationEstimate;
+             var duration = (this.readyState == 3) ? this.duration : this.durationEstimate;
              jQuery( '.played-time' ).width( Math.floor( ( this.position / duration ) * 450 ) );
            }
         });
       }
   };
   
-  this.addPlayer = function( json ){
-		var p = json;
+	/**
+	 * 
+	 * @param object playlist_data object retrieved from soundcloud
+	 */
+  this.addPlayer = function( playlist_data ){
+		var p = playlist_data;
     p.pid = 'p' + String(p.id); 
     playlists[p.pid] = p;
    
@@ -66,9 +70,11 @@ PMSCPlayer = function( client_id ){
 		}); 
     p.$playButton.appendTo(p.$controlBox);
     
+		/*
     p.$nextButton = jQuery('<div class="next">NEXT</div>');
     p.$nextButton.on('click', next );
     p.$nextButton.appendTo(p.$controlBox);
+		*/
 
 		p.$bigPlayButton = jQuery('<div class="big-play">PLAY</div>');
 		p.$bigPlayButton.appendTo(p.$player);
@@ -86,14 +92,45 @@ PMSCPlayer = function( client_id ){
       t_html += p.tracks[c].title;
       var duration = p.tracks[c].duration;
 
+			// controls
+
+
       t_html += ' (<span class="timeplayed"></span>'  + minSec(duration) + ')';
       t_html += '<div class="total-time"></div>';
       t_html += '</div>';
-      var t = jQuery( t_html );
-      t.appendTo(p.$controlBox);
-    }
-    
-    p.$controlBox.append('<div class="footer">Sounds hosted on <a href="http://soundcloud.com/">SoundCloud</a></div>');
+      var $t = jQuery( t_html );
+      $t.appendTo(p.$controlBox);
+
+
+			var $track_controls = jQuery('<div class="track-controls"></div>');
+
+			var $play = jQuery('<div class="playpause">pause</div>');
+			$play.click(function(){
+				playPause(p.pid);
+			});
+			$track_controls.append($play);
+
+			if( c != 0 ){
+				var $previous = jQuery('<div class="previous">previous</div>');
+				$previous.on('click', previous);
+				$track_controls.append($previous);
+			}
+
+			if( c != p.tracks.length ){
+				var $next = jQuery('<div class="next">next</div>');
+				$next.on('click', next);
+				$track_controls.append($next);
+			}
+			
+			$t.prepend($track_controls);
+
+		}
+			
+		console.log(p);
+		var $footer = jQuery('<div class="footer"></div>');
+		$footer.append('<a href="' + p.permalink_url + '">Download<a>');
+		$footer.append('<div class="hosted">Sounds hosted on <a href="http://soundcloud.com/">SoundCloud</a></div>');
+		p.$controlBox.append($footer);
   };
 
   /*
@@ -107,18 +144,26 @@ PMSCPlayer = function( client_id ){
       return min + ':' + sec;
   };
   
+	/**
+	 * toggle play/pause
+	 * @param {string} pid Playlist id. Optional.
+	 */
   var playPause = function(pid){
-    var $this = jQuery(this);
-    console.log( 'pid:' + pid );
-    console.log( 'current track: ' + current_track);
-    var tid = playlists[pid].tracks[current_track].tid; 
-    console.log( 'tid: ' + tid );
-    if( $this.data('playlist') != current_playlist ){
+
+		if( pid && pid != current_playlist ){
+			console.log('switching playlists');
       current_playlist = pid;
       current_track = 0;
-    } 
+		}
+    var tid = playlists[current_playlist].tracks[current_track].tid; 
+
+    console.log( 'pid:' + current_playlist );
+    console.log( 'current track: ' + current_track);
+    console.log( 'tid: ' + tid );
+
     var playstate = soundManager.getSoundById(tid).playState;  
 		var paused = soundManager.getSoundById(tid).paused;
+
     if( playstate == 0 || paused ){
 			console.log('play');
       play();
@@ -137,6 +182,7 @@ PMSCPlayer = function( client_id ){
   var play = function(){
     var tid = playlists[current_playlist].tracks[current_track].tid; 
     soundManager.play( tid );
+
     $track = jQuery( '#' + tid );
     
     jQuery( '.track' ).removeClass( 'playing' ).addClass('notplaying');
@@ -144,30 +190,40 @@ PMSCPlayer = function( client_id ){
     jQuery( '.played-time' ).remove();
     jQuery('#' + tid + ' .total-time').append( jQuery('<div class="played-time"></div>'));
   };
- 
+
   /*
    * pause the playing track
    */ 
   var pause = function(){
+		console.log('current_track:' + current_track );
     soundManager.pause( playlists[current_playlist].tracks[current_track].tid );
-    console.log('TODO: write ui stuff!'); 
+
+    console.log('pause(): TODO: write ui stuff!'); 
   };
  
   /*
    * skips to the next track and plays it
    */ 
   var next = function(){
-    //check if it's the last track in the playlist playing
     soundManager.stopAll();
+    //check if the currently playing track is the last track in the playlist 
     if( playlists[current_playlist].tracks[current_track + 1] ==  undefined ){
       // Clean up ui
     } else {
-      current_track++;
+      current_track = current_track + 1;
       play();
     }
   };
  
   var previous = function(){
+    soundManager.stopAll();
+
+		if( current_track == 0 ){
+			// clean up ui
+		} else {
+			current_track = current_track - 1;
+			play();
+		}
     
   };
   // test -- create button for each track
