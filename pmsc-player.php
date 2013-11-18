@@ -21,6 +21,7 @@ class PMSCPlayer {
   function  __construct() {
     add_action('admin_init', array($this, 'admin_init'));
     add_action('admin_menu', array($this, 'plugin_menu'));
+		add_action('wp_print_footer_scripts', array($this, 'player_javascript'));
     add_shortcode('pmsc', array($this, 'pmsc_print'));
     add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
    register_activation_hook( __FILE__, array($this, 'db_init'));
@@ -120,30 +121,41 @@ class PMSCPlayer {
   function big_player($json_pl){
     $pl = json_decode($json_pl);  
     
+		wp_enqueue_script('jquery');
     wp_enqueue_script('pmsc_player');
     wp_enqueue_script('soundmanager2');
     wp_enqueue_style('pmsc_player');
 
     $img_url = preg_replace('/large/', 't500x500', $pl->artwork_url);
-
     
     $r = <<<EOF
 <div id="pmsc-$pl->id" class="pmsc-player pmsc-500" style="background-image:url('$img_url')">
 </div>
-<div class="status">Download on soundcloud at $pl->permalink_url</div>
-<script>
-var json_$pl->id = $json_pl;
-jQuery(document).ready(function(){  
-	if( typeof pmsc_playlist_player == 'undefined' ){	
-		pmsc_playlist_player = new PMSCPlayer('{$this->client_id}'); 
-	}
-	pmsc_playlist_player.addPlayer(json_$pl->id);
-});
-</script>
+<div class="status"><a href="$pl->permalink_url">Download on SoundCloud</a></div>
 EOF;
+
+		$this->javascript .= <<<EOF
+	var json_$pl->id = $json_pl;
+	pmsc_playlist_player.addPlayer(json_$pl->id);
+EOF;
+
     return $r;
   }
 
+	/**
+	 * 
+	 * @return string javascript that builds players.
+	 */
+	function player_javascript(){
+		echo <<<EOF
+<script type="text/javascript">
+jQuery(document).ready(function(){  
+		pmsc_playlist_player = new PMSCPlayer('{$this->client_id}'); 
+		$this->javascript
+});
+</script>
+EOF;
+	}
   /**
    * create/update database table
    */
@@ -157,6 +169,8 @@ EOF;
               
     dbDelta( $sql );
   }
+
+	private $javascript;
 }
 
 $sound_cloud_player = new PMSCPlayer();
