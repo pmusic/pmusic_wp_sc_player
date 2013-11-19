@@ -63,6 +63,7 @@ PMSCPlayer = function( client_id ){
     p.$controlBox = jQuery('<div class="control-box"></div>');
     p.$controlBox.appendTo(playlists[p.pid].$player);
     
+		/*
     p.$playButton = jQuery('<div class="play">PLAY</div>');
     p.$playButton.data('playlist', p.pid );
     p.$playButton.on('click', function(){
@@ -70,13 +71,12 @@ PMSCPlayer = function( client_id ){
 		}); 
     p.$playButton.appendTo(p.$controlBox);
     
-		/*
     p.$nextButton = jQuery('<div class="next">NEXT</div>');
     p.$nextButton.on('click', next );
     p.$nextButton.appendTo(p.$controlBox);
 		*/
 
-		p.$bigPlayButton = jQuery('<div class="big-play">PLAY</div>');
+		p.$bigPlayButton = jQuery('<div class="big-play icon-play"></div>');
 		p.$bigPlayButton.appendTo(p.$player);
     p.$bigPlayButton.data('playlist', p.pid );
 		p.$bigPlayButton.on('click', function(){
@@ -104,20 +104,20 @@ PMSCPlayer = function( client_id ){
 
 			var $track_controls = jQuery('<div class="track-controls"></div>');
 
-			var $play = jQuery('<div class="playpause">pause</div>');
+			var $play = jQuery('<div class="playpause icon-pause"></div>');
 			$play.click(function(){
 				playPause(p.pid);
 			});
 			$track_controls.append($play);
 
 			if( c != 0 ){
-				var $previous = jQuery('<div class="previous">previous</div>');
+				var $previous = jQuery('<div class="previous icon-arrow-up"></div>');
 				$previous.on('click', previous);
 				$track_controls.append($previous);
 			}
 
 			if( c != p.tracks.length ){
-				var $next = jQuery('<div class="next">next</div>');
+				var $next = jQuery('<div class="next icon-arrow-down"></div>');
 				$next.on('click', next);
 				$track_controls.append($next);
 			}
@@ -127,10 +127,6 @@ PMSCPlayer = function( client_id ){
 		}
 			
 		console.log(p);
-		var $footer = jQuery('<div class="footer"></div>');
-		$footer.append('<a href="' + p.permalink_url + '">Download<a>');
-		$footer.append('<div class="hosted">Sounds hosted on <a href="http://soundcloud.com/">SoundCloud</a></div>');
-		p.$controlBox.append($footer);
   };
 
   /*
@@ -157,18 +153,12 @@ PMSCPlayer = function( client_id ){
 		}
     var tid = playlists[current_playlist].tracks[current_track].tid; 
 
-    console.log( 'pid:' + current_playlist );
-    console.log( 'current track: ' + current_track);
-    console.log( 'tid: ' + tid );
-
     var playstate = soundManager.getSoundById(tid).playState;  
 		var paused = soundManager.getSoundById(tid).paused;
 
     if( playstate == 0 || paused ){
-			console.log('play');
       play();
     } else if( playstate == 1 ) {
-			console.log('pause');
       pause();    
     } else {
       //???
@@ -186,6 +176,7 @@ PMSCPlayer = function( client_id ){
     $track = jQuery( '#' + tid );
     
     jQuery( '.track' ).removeClass( 'playing' ).addClass('notplaying');
+		jQuery('.playpause').removeClass('icon-play').addClass('icon-pause');
     $track.removeClass('notplaying').addClass('playing');
     jQuery( '.played-time' ).remove();
     jQuery('#' + tid + ' .total-time').append( jQuery('<div class="played-time"></div>'));
@@ -198,7 +189,7 @@ PMSCPlayer = function( client_id ){
 		console.log('current_track:' + current_track );
     soundManager.pause( playlists[current_playlist].tracks[current_track].tid );
 
-    console.log('pause(): TODO: write ui stuff!'); 
+		jQuery('.playpause').removeClass('icon-pause').addClass('icon-play');
   };
  
   /*

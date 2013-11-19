@@ -8,6 +8,7 @@
   background-color:gray;
   position:relative;
   margin:auto; 
+	box-shadow: 0 0 3px #CCCCCC;
 }
 .pmsc-500  {
   width:500px;
@@ -16,7 +17,7 @@
 
 .control-box {
   position:absolute;
-  bottom:0;
+  bottom: 4%;
 	display:none;
 }
 
@@ -28,19 +29,17 @@
 	margin:auto;
 
 	border-radius:.5em;
-	border:2px solid #999999;
+	border:2px solid #8DAE65;
 
 	text-align:center;
-	background-color:green;
+	background-color:#DBDDDA;
 	opacity:70%;
 
-	color: #FFFFFF;
+	color:#8DAE65;
 	font-weight:bold;
 	font-size:1.9em;
 
-	box-shadow: 5px 5px 5px #111111;
-
-
+	box-shadow:5px 5px 5px #111111;
 }
 .big-play:hover {
   cursor:pointer;
@@ -59,21 +58,11 @@
   cursor:pointer;
   float:left;
 }
-/*
-.pmsc-player .next {
-  width:60px;
-  cursor:pointer;
-  background-color:#330033;  
-  color:#FFF;
-  padding:0 5px;
-  float:left;
-}
-*/
-
 .pmsc-player .track {
   border-top: 1px solid black;
   width:500px;
   clear:both;
+	position:relative;
 }
 
 .total-time {
@@ -100,16 +89,32 @@
 }
 .track-controls {
 	float:right;
-	font-size:85%;
-	line-height:1.1;
+	width:9%;
 	margin:2px;
+	position:relative;
 }
 .track-controls .playpause,
 .track-controls .next,
 .track-controls .previous {
 	cursor:pointer;
+	position:absolute;
 }
-
+.track-controls .playpause {
+	top:0;
+	left:0;
+	font-size:140%;
+	line-height:160%;
+}
+.track-controls .next,
+.track-controls .previous {
+	right:0;
+}
+.track-controls .next {
+	bottom:0;
+}
+.track-controls .previous {
+	top:0;
+}
 .pmsc-player .notplaying {
   background-color:#EEEEEE;
   opacity:0.9;
@@ -135,9 +140,14 @@
   width:100%;
   color:#EEE;
   background-color:black;
-  padding:0 5px;
   font-size:80%;
+
+	position: absolute;
+	bottom: 0;
+
+	height: 4%;
 }
 .pmsc-player .footer .hosted  {
 	float:right;
+	padding-right: 1%;
 }

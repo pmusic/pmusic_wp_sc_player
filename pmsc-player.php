@@ -35,6 +35,7 @@ class PMSCPlayer {
       wp_register_script('soundmanager2', plugins_url('js/soundmanager2-nodebug-jsmin.js', __FILE__));
     }
     wp_register_style('pmsc_player', plugins_url('css/pmsc_player.css', __FILE__));
+    wp_register_style('pmsc_player_icons', plugins_url('css/icons.css', __FILE__));
   }
 
 	function plugin_menu(){
@@ -125,13 +126,17 @@ class PMSCPlayer {
     wp_enqueue_script('pmsc_player');
     wp_enqueue_script('soundmanager2');
     wp_enqueue_style('pmsc_player');
+    wp_enqueue_style('pmsc_player_icons');
 
     $img_url = preg_replace('/large/', 't500x500', $pl->artwork_url);
     
     $r = <<<EOF
 <div id="pmsc-$pl->id" class="pmsc-player pmsc-500" style="background-image:url('$img_url')">
+	<div class="footer">		'
+		<a href="$pl->permalink_url">Download<a>
+		<div class="hosted">Sounds hosted on <a href="http://soundcloud.com/">SoundCloud</a></div>
+	</div>
 </div>
-<div class="status"><a href="$pl->permalink_url">Download on SoundCloud</a></div>
 EOF;
 
 		$this->javascript .= <<<EOF
