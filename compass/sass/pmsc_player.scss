@@ -1,14 +1,16 @@
 /*
- * pmsc_player.css
+ * pmsc_player.scss
  * 
  * stylesheet for the PM Sound Cloud Player
  */
+@import 'compass';
+@import "compass/css3/border-radius";
 
 .pmsc-player {
   background-color:gray;
   position:relative;
   margin:auto; 
-	box-shadow: 0 0 3px #CCCCCC;
+  box-shadow: 0 0 3px #CCCCCC;
 }
 .pmsc-500  {
   width:500px;
@@ -18,28 +20,28 @@
 .control-box {
   position:absolute;
   bottom: 4%;
-	display:none;
+  display:none;
 }
 
 .big-play {
-	width:16%;
-	position:absolute;
-	top:42%;
-	left:42%;
-	margin:auto;
+  width:16%;
+  position:absolute;
+  top:42%;
+  left:42%;
+  margin:auto;
 
-	border-radius:.5em;
-	border:2px solid #8DAE65;
+  @include border-radius(.5em);
+  border:2px solid #8DAE65;
 
-	text-align:center;
-	background-color:#DBDDDA;
-	opacity:70%;
+  text-align:center;
+  background-color:#DBDDDA;
+  opacity:70%;
 
-	color:#8DAE65;
-	font-weight:bold;
-	font-size:1.9em;
+  color:#8DAE65;
+  font-weight:bold;
+  font-size:1.9em;
 
-	box-shadow:5px 5px 5px #111111;
+  box-shadow:5px 5px 5px #111111;
 }
 .big-play:hover {
   cursor:pointer;
@@ -62,7 +64,10 @@
   border-top: 1px solid black;
   width:500px;
   clear:both;
-	position:relative;
+  position:relative;
+
+  @include transition-property( all );
+  @include transition-duration( 1s );
 }
 
 .total-time {
@@ -71,8 +76,8 @@
   bottom:0;
   border-top:1px solid #333;
   border-right:1px solid #333;
-  transition: height 2s;
-  -webkit-transition: height 2s;
+  @include transition-property( height );
+  @include transition-duration( 2s );
 }
 .notplaying .total-time {
   display: none;
@@ -86,51 +91,49 @@
   height:100%;
   width:0; 
   background-color:#36679B;
+
+  @include transition-property( width );
+  @include transition-duration( 2s );
 }
 .track-controls {
-	float:right;
-	width:9%;
-	height:30px;
-	margin:2px;
-	position:relative;
+  float:right;
+  width:9%;
+  height:30px;
+  margin:2px;
+  position:relative;
 }
 .track-controls .playpause,
 .track-controls .next,
 .track-controls .previous {
-	cursor:pointer;
-	position:absolute;
+  cursor:pointer;
+  position:absolute;
 }
 .track-controls .playpause {
-	top:0;
-	left:0;
-	font-size:140%;
-	line-height:160%;
+  top:0;
+  left:0;
+  font-size:140%;
+  line-height:160%;
 }
 .track-controls .next,
 .track-controls .previous {
-	right:0;
+  right:0;
 }
 .track-controls .next {
-	bottom:0;
+  bottom:0;
 }
 .track-controls .previous {
-	top:0;
+  top:0;
 }
 .pmsc-player .notplaying {
   background-color:#EEEEEE;
   opacity:0.9;
-	font-size:90%;
+  font-size:90%;
 }
 .pmsc-player .playing {
-  color: white;
+  color: #FFFFFF;
   background-color:#679B36;
 
-	background-image: -ms-linear-gradient(top, #86C946 0%, #679B36 100%);
-	background-image: -moz-linear-gradient(top, #86C946 0%, #679B36 100%);
-	background-image: -o-linear-gradient(top, #86C946 0%, #679B36 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #86C946), color-stop(1, #679B36));
-	background-image: -webkit-linear-gradient(top, #86C946 0%, #679B36 100%);
-	background-image: linear-gradient(to bottom, #86C946 0%, #679B36 100%);
+  @include background-image( linear-gradient( #86C946, #679B36 ) );
 }
 .playing .timeplayed {
   display: inline;
@@ -139,10 +142,10 @@
   display: none;
 }
 .pmsc-player .notplaying .track-controls {
-	display: none;
+  display: none;
 }
 .pmsc-player .playing .track-controls {
-	display: block;
+  display: block;
 }
 .pmsc-player .footer {
   width:100%;
@@ -150,12 +153,12 @@
   background-color:black;
   font-size:80%;
 
-	position: absolute;
-	bottom: 0;
+  position: absolute;
+  bottom: 0;
 
-	height: 4%;
+  height: 4%;
 }
 .pmsc-player .footer .hosted  {
-	float:right;
-	padding-right: 1%;
+  float:right;
+  padding-right: 1%;
 }

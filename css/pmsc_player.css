@@ -1,9 +1,9 @@
 /*
- * pmsc_player.css
+ * pmsc_player.scss
  * 
  * stylesheet for the PM Sound Cloud Player
  */
-/* line 7, ../compass/sass/pmsc_player.scss */
+/* line 9, ../compass/sass/pmsc_player.scss */
 .pmsc-player {
   background-color: gray;
   position: relative;
@@ -11,27 +11,31 @@
   box-shadow: 0 0 3px #CCCCCC;
 }
 
-/* line 13, ../compass/sass/pmsc_player.scss */
+/* line 15, ../compass/sass/pmsc_player.scss */
 .pmsc-500 {
   width: 500px;
   height: 500px;
 }
 
-/* line 18, ../compass/sass/pmsc_player.scss */
+/* line 20, ../compass/sass/pmsc_player.scss */
 .control-box {
   position: absolute;
   bottom: 4%;
   display: none;
 }
 
-/* line 24, ../compass/sass/pmsc_player.scss */
+/* line 26, ../compass/sass/pmsc_player.scss */
 .big-play {
   width: 16%;
   position: absolute;
   top: 42%;
   left: 42%;
   margin: auto;
-  border-radius: .5em;
+  -webkit-border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+  -ms-border-radius: 0.5em;
+  -o-border-radius: 0.5em;
+  border-radius: 0.5em;
   border: 2px solid #8DAE65;
   text-align: center;
   background-color: #DBDDDA;
@@ -42,19 +46,19 @@
   box-shadow: 5px 5px 5px #111111;
 }
 
-/* line 44, ../compass/sass/pmsc_player.scss */
+/* line 46, ../compass/sass/pmsc_player.scss */
 .big-play:hover {
   cursor: pointer;
 }
 
-/* line 48, ../compass/sass/pmsc_player.scss */
+/* line 50, ../compass/sass/pmsc_player.scss */
 .pmsc-player .status {
   position: absolute;
   top: 50%;
   margin: auto;
 }
 
-/* line 54, ../compass/sass/pmsc_player.scss */
+/* line 56, ../compass/sass/pmsc_player.scss */
 .pmsc-player .play {
   width: 60px;
   background-color: green;
@@ -63,45 +67,67 @@
   float: left;
 }
 
-/* line 61, ../compass/sass/pmsc_player.scss */
+/* line 63, ../compass/sass/pmsc_player.scss */
 .pmsc-player .track {
   border-top: 1px solid black;
   width: 500px;
   clear: both;
   position: relative;
+  -webkit-transition-property: all;
+  -moz-transition-property: all;
+  -o-transition-property: all;
+  transition-property: all;
+  -webkit-transition-duration: 1s;
+  -moz-transition-duration: 1s;
+  -o-transition-duration: 1s;
+  transition-duration: 1s;
 }
 
-/* line 68, ../compass/sass/pmsc_player.scss */
+/* line 73, ../compass/sass/pmsc_player.scss */
 .total-time {
   position: relative;
   width: 90%;
   bottom: 0;
   border-top: 1px solid #333;
   border-right: 1px solid #333;
-  transition: height 2s;
-  -webkit-transition: height 2s;
+  -webkit-transition-property: height;
+  -moz-transition-property: height;
+  -o-transition-property: height;
+  transition-property: height;
+  -webkit-transition-duration: 2s;
+  -moz-transition-duration: 2s;
+  -o-transition-duration: 2s;
+  transition-duration: 2s;
 }
 
-/* line 77, ../compass/sass/pmsc_player.scss */
+/* line 82, ../compass/sass/pmsc_player.scss */
 .notplaying .total-time {
   display: none;
   height: 0;
 }
 
-/* line 81, ../compass/sass/pmsc_player.scss */
+/* line 86, ../compass/sass/pmsc_player.scss */
 .playing .total-time {
   height: 10px;
 }
 
-/* line 84, ../compass/sass/pmsc_player.scss */
+/* line 89, ../compass/sass/pmsc_player.scss */
 .played-time {
   position: relative;
   height: 100%;
   width: 0;
   background-color: #36679B;
+  -webkit-transition-property: width;
+  -moz-transition-property: width;
+  -o-transition-property: width;
+  transition-property: width;
+  -webkit-transition-duration: 2s;
+  -moz-transition-duration: 2s;
+  -o-transition-duration: 2s;
+  transition-duration: 2s;
 }
 
-/* line 90, ../compass/sass/pmsc_player.scss */
+/* line 98, ../compass/sass/pmsc_player.scss */
 .track-controls {
   float: right;
   width: 9%;
@@ -110,7 +136,7 @@
   position: relative;
 }
 
-/* line 99, ../compass/sass/pmsc_player.scss */
+/* line 107, ../compass/sass/pmsc_player.scss */
 .track-controls .playpause,
 .track-controls .next,
 .track-controls .previous {
@@ -118,7 +144,7 @@
   position: absolute;
 }
 
-/* line 103, ../compass/sass/pmsc_player.scss */
+/* line 111, ../compass/sass/pmsc_player.scss */
 .track-controls .playpause {
   top: 0;
   left: 0;
@@ -126,62 +152,61 @@
   line-height: 160%;
 }
 
-/* line 110, ../compass/sass/pmsc_player.scss */
+/* line 118, ../compass/sass/pmsc_player.scss */
 .track-controls .next,
 .track-controls .previous {
   right: 0;
 }
 
-/* line 113, ../compass/sass/pmsc_player.scss */
+/* line 121, ../compass/sass/pmsc_player.scss */
 .track-controls .next {
   bottom: 0;
 }
 
-/* line 116, ../compass/sass/pmsc_player.scss */
+/* line 124, ../compass/sass/pmsc_player.scss */
 .track-controls .previous {
   top: 0;
 }
 
-/* line 119, ../compass/sass/pmsc_player.scss */
+/* line 127, ../compass/sass/pmsc_player.scss */
 .pmsc-player .notplaying {
   background-color: #EEEEEE;
   opacity: 0.9;
   font-size: 90%;
 }
 
-/* line 124, ../compass/sass/pmsc_player.scss */
+/* line 132, ../compass/sass/pmsc_player.scss */
 .pmsc-player .playing {
-  color: white;
+  color: #FFFFFF;
   background-color: #679B36;
-  background-image: -ms-linear-gradient(top, #86c946 0%, #679b36 100%);
-  background-image: -moz-linear-gradient(top, #86c946 0%, #679b36 100%);
-  background-image: -o-linear-gradient(top, #86c946 0%, #679b36 100%);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #86c946), color-stop(1, #679b36));
-  background-image: -webkit-linear-gradient(top, #86c946 0%, #679b36 100%);
-  background-image: linear-gradient(to bottom, #86c946 0%, #679b36 100%);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #86c946), color-stop(100%, #679b36));
+  background-image: -webkit-linear-gradient(#86c946, #679b36);
+  background-image: -moz-linear-gradient(#86c946, #679b36);
+  background-image: -o-linear-gradient(#86c946, #679b36);
+  background-image: linear-gradient(#86c946, #679b36);
 }
 
-/* line 135, ../compass/sass/pmsc_player.scss */
+/* line 138, ../compass/sass/pmsc_player.scss */
 .playing .timeplayed {
   display: inline;
 }
 
-/* line 138, ../compass/sass/pmsc_player.scss */
+/* line 141, ../compass/sass/pmsc_player.scss */
 .notplaying .timeplayed {
   display: none;
 }
 
-/* line 141, ../compass/sass/pmsc_player.scss */
+/* line 144, ../compass/sass/pmsc_player.scss */
 .pmsc-player .notplaying .track-controls {
   display: none;
 }
 
-/* line 144, ../compass/sass/pmsc_player.scss */
+/* line 147, ../compass/sass/pmsc_player.scss */
 .pmsc-player .playing .track-controls {
   display: block;
 }
 
-/* line 147, ../compass/sass/pmsc_player.scss */
+/* line 150, ../compass/sass/pmsc_player.scss */
 .pmsc-player .footer {
   width: 100%;
   color: #EEE;
@@ -192,7 +217,7 @@
   height: 4%;
 }
 
-/* line 158, ../compass/sass/pmsc_player.scss */
+/* line 161, ../compass/sass/pmsc_player.scss */
 .pmsc-player .footer .hosted {
   float: right;
   padding-right: 1%;
