@@ -1,5 +1,5 @@
 /**
- * @param string client_id
+ * @param string SoundCloud client_id
  */
 var PMSCPlayer = function (client_id) {
 
@@ -63,7 +63,8 @@ var PMSCPlayer = function (client_id) {
 
     //create track divs
     for (var c = 0; c<p.tracks.length; c = c + 1){
-      var t_html = '<div class="track notplaying" id="t' + p.tracks[c].id + '">'; 
+      //var t_html = '<div class="track notplaying" id="t' + p.tracks[c].id + '">'; 
+      var t_html = '<div class="track notplaying" data-track="' + c + '">'; 
       t_html += (c + 1) + ') ';
       t_html += p.tracks[c].title;
       var duration = p.tracks[c].duration;
@@ -143,13 +144,14 @@ var PMSCPlayer = function (client_id) {
     var tid = playlists[current_playlist].tracks[current_track].tid; 
     soundManager.play(tid);
 
-    $track = jQuery('#' + tid);
+    $track = jQuery('#pmsc-' + current_playlist + ' [data-track="' + current_track + '"]');
     
     jQuery('.track').removeClass('playing').addClass('notplaying');
 		jQuery('.playpause').removeClass('icon-play').addClass('icon-pause');
     $track.removeClass('notplaying').addClass('playing');
     jQuery('.played-time').remove();
-    jQuery('#' + tid + ' .total-time').append(jQuery('<div class="played-time"></div>'));
+    //jQuery('#' + tid + ' .total-time').append(jQuery('<div class="played-time"></div>'));
+    $track.children('.total-time').append(jQuery('<div class="played-time"></div>'));
   };
 
   /**
@@ -186,6 +188,10 @@ var PMSCPlayer = function (client_id) {
 			current_track = current_track - 1;
 			play();
 		}
+  };
+
+  var switchTrack = function (tid) {
+
   };
 
 	/**
