@@ -26,12 +26,12 @@ class PMSCPlayer {
   }
 
   function enqueue_scripts() {
-    wp_register_script( 'pmsc_player', plugins_url( 'js/pmsc_player.js', __FILE__ ) );
     if ( WP_DEBUG ) {
       wp_register_script( 'soundmanager2', plugins_url( 'js/soundmanager2.js', __FILE__ ) );
     } else {
       wp_register_script( 'soundmanager2', plugins_url( 'js/soundmanager2-nodebug-jsmin.js', __FILE__ ) );
     }
+    wp_register_script( 'pmsc_player', plugins_url( 'js/pmsc_player.js', __FILE__ ) );
     wp_register_style( 'pmsc_player', plugins_url( 'css/pmsc_player.css', __FILE__ ) );
     wp_register_style( 'pmsc_player_icons', plugins_url( 'css/icons.css', __FILE__ ) );
   }
@@ -144,7 +144,7 @@ EOF;
 
 		$this->javascript .= <<<EOF
 	var json_$pl->id = $json_pl;
-	pmsc_playlist_player.addPlayer(json_$pl->id);
+	pmsc_player.addPlayer(json_$pl->id);
 EOF;
 
     return $r;
@@ -158,7 +158,7 @@ EOF;
 		echo <<<EOF
 <script type="text/javascript">
 jQuery(document).ready(function () {
-		pmsc_playlist_player = new PMSCPlayer('{$this->client_id}');
+		pmsc_player.setClientId('{$this->client_id}');
 		$this->javascript
 });
 </script>
