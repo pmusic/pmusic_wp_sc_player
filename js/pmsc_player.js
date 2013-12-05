@@ -1,4 +1,7 @@
-//var PMSCPlayer = function (client_id) {
+/*
+ * Contains code that creates the "pmsc_player" object, which manages the players.
+ */
+/*jslint browser: true, devel: true, vars: true, indent: 2 */
 jQuery(document).ready(function () {
   /**
   * Global singleton object for managing players
@@ -27,16 +30,18 @@ jQuery(document).ready(function () {
           id: 't' + String(playlists[pid].tracks[y].id),
           url: playlists[pid].tracks[y].stream_url + '?client_id=' + client_id,
           onfinish: next,
-          onplay: function () { //TODO: move function creation outside of loop
-              current_playlist = pid;
-            },
-            whileplaying: function () {
-              jQuery('.playing .timeplayed').text(minSec(this.position) + '/');
-              var duration = (this.readyState === 3) ? this.duration : this.durationEstimate;
-              jQuery('.played-time').width(Math.floor((this.position / duration) * 450));
-            }
-          });
-        }
+          //onplay: function () { //TODO: move function creation outside of loop
+          //  current_playlist = pid;
+          //},
+          whileplaying: animateTimeBar
+        });
+      }
+    };
+
+    var animateTimeBar = function () {
+      jQuery('.playing .timeplayed').text(minSec(this.position) + '/');
+      var duration = (this.readyState === 3) ? this.duration : this.durationEstimate;
+      jQuery('.played-time').width(Math.floor((this.position / duration) * 450));
     };
 
 
@@ -58,6 +63,7 @@ jQuery(document).ready(function () {
     var playPause = function (pid) {
 
       if (pid && pid !== current_playlist) {
+        soundManager.stopAll();
         //switch playlists
         current_playlist = pid;
         current_track = 0;
@@ -89,7 +95,6 @@ jQuery(document).ready(function () {
       jQuery('.playpause').removeClass('icon-play').addClass('icon-pause');
       $track.removeClass('notplaying').addClass('playing');
       jQuery('.played-time').remove();
-      //jQuery('#' + tid + ' .total-time').append(jQuery('<div class="played-time"></div>'));
       $track.children('.total-time').append(jQuery('<div class="played-time"></div>'));
     };
 
@@ -108,7 +113,7 @@ jQuery(document).ready(function () {
     var next = function () {
       soundManager.stopAll();
       if (typeof playlists[current_playlist].tracks[current_track + 1] === 'undefined') { // no more tracks in playlist
-        resetPlayer();
+        resetPlayers();
       } else {
         current_track = current_track + 1;
         play();
@@ -122,21 +127,32 @@ jQuery(document).ready(function () {
       soundManager.stopAll();
 
       if (current_track === 0) {
-        resetPlayer();
+        resetPlayers();
       } else {
         current_track = current_track - 1;
         play();
       }
     };
 
-    var switchTrack = function (tid) {
-
+    /**
+     * Called when a track div is clicked to switch the track.
+     * @returns {undefined}
+     */
+    var switchTrack = function (event) {
+      var track = event.data.track;
+      if( track === current_track ){ //currently playing track
+        return;
+      }
+      console.log('switch to track ' + track);
+      soundManager.stopAll();
+      current_track = track;
+      play();
     };
 
     /**
-    * resets the player to the "default" position with just the big play button.
+     * Resets all players to the default position with the big play button
     */
-    var resetPlayer = function () {
+    var resetPlayers = function () {
       var player = '#pmsc-' + current_playlist;
       jQuery(player + ' .big-play').fadeIn();
       jQuery(player + ' .control-box').fadeOut();
@@ -156,7 +172,7 @@ jQuery(document).ready(function () {
       },
 
       /**
-      * @param object p JavaScript object retrieved from soundcloud
+      * @param {object} p JavaScript object retrieved from soundcloud
       */
       addPlayer:  function (p) {
         p.pid = 'p' + String(p.id);
@@ -174,15 +190,15 @@ jQuery(document).ready(function () {
         p.$bigPlayButton = jQuery('<div class="big-play icon-play"></div>');
         p.$bigPlayButton.appendTo(p.$player);
         p.$bigPlayButton.data('playlist', p.pid );
-        p.$bigPlayButton.on('click', function () {
+        p.$bigPlayButton.click(function () {
+            resetPlayers();
             p.$controlBox.show('up');
             p.$bigPlayButton.fadeOut();
             playPause(p.pid);
         });
 
         //create track divs
-        for (var c = 0; c<p.tracks.length; c = c + 1){
-          //var t_html = '<div class="track notplaying" id="t' + p.tracks[c].id + '">';
+        for (var c = 0; c < p.tracks.length; c = c + 1){
           var t_html = '<div class="track notplaying" data-track="' + c + '">';
           t_html += (c + 1) + ') ';
           t_html += p.tracks[c].title;
@@ -194,6 +210,7 @@ jQuery(document).ready(function () {
           t_html += '</div>';
           var $t = jQuery(t_html);
           $t.appendTo(p.$controlBox);
+          $t.click({track: c}, switchTrack);
 
 
           var $track_controls = jQuery('<div class="track-controls"></div>');
