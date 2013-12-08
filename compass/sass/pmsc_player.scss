@@ -76,6 +76,7 @@
   bottom:0;
   border-top:1px solid #333;
   border-right:1px solid #333;
+  cursor: e-resize;
   @include transition-property( height );
   @include transition-duration( 2s );
 }

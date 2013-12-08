@@ -5,7 +5,7 @@
 jQuery(document).ready(function () {
   /**
   * Global singleton object for managing players
-  * Contains two methods: setClientId and addPlayer
+  * Has two public methods: setClientId and addPlayer
   */
   pmsc_player = (function () {
 
@@ -30,9 +30,6 @@ jQuery(document).ready(function () {
           id: 't' + String(playlists[pid].tracks[y].id),
           url: playlists[pid].tracks[y].stream_url + '?client_id=' + client_id,
           onfinish: next,
-          //onplay: function () { //TODO: move function creation outside of loop
-          //  current_playlist = pid;
-          //},
           whileplaying: animateTimeBar
         });
       }
@@ -89,7 +86,7 @@ jQuery(document).ready(function () {
       var tid = playlists[current_playlist].tracks[current_track].tid;
       soundManager.play(tid);
 
-      $track = jQuery('#pmsc-' + current_playlist + ' [data-track="' + current_track + '"]');
+      var $track = jQuery('#pmsc-' + current_playlist + ' [data-track="' + current_track + '"]');
 
       jQuery('.track').removeClass('playing').addClass('notplaying');
       jQuery('.playpause').removeClass('icon-play').addClass('icon-pause');
@@ -99,29 +96,32 @@ jQuery(document).ready(function () {
     };
 
     /**
-    * pause the playing track
+    * Called when the "pause" button is pressed
     */
-    var pause = function () {
+    var pause = function (event) {
       soundManager.pause(playlists[current_playlist].tracks[current_track].tid);
 
       jQuery('.playpause').removeClass('icon-pause').addClass('icon-play');
+      event.stopPropagation();
     };
 
     /**
-    * skips to the next track and plays it
+    * Called when the "next" button is pressed
     */
-    var next = function () {
+    var next = function (event) {
       soundManager.stopAll();
       if (typeof playlists[current_playlist].tracks[current_track + 1] === 'undefined') { // no more tracks in playlist
         resetPlayers();
       } else {
         current_track = current_track + 1;
+        console.log('next track: ' + current_track);
         play();
       }
+      event.stopPropagation();
     };
 
     /**
-    * Go back to previous track
+    * Called when the "previous" button is pressed
     */
     var previous = function () {
       soundManager.stopAll();
@@ -132,6 +132,7 @@ jQuery(document).ready(function () {
         current_track = current_track - 1;
         play();
       }
+      event.stopPropagation();
     };
 
     /**
@@ -140,13 +141,31 @@ jQuery(document).ready(function () {
      */
     var switchTrack = function (event) {
       var track = event.data.track;
-      if( track === current_track ){ //currently playing track
+      console.dir(jQuery(this).hasClass('playing'));;
+      if (jQuery(this).hasClass('playing')) { //currently playing track
         return;
       }
       console.log('switch to track ' + track);
       soundManager.stopAll();
       current_track = track;
       play();
+    };
+    
+    /**
+     * Skips to a location in the track
+     * @param {event} event
+     * @returns {undefined}
+     */
+    var seek = function (event) {
+      var offset = jQuery(this).parent().offset().left;
+      var x = event.clientX - offset;
+      var percent = x / this.clientWidth;
+      console.log('x:' + x);
+      console.log('percent:' + percent);
+      console.dir(playlists[current_playlist].tracks[current_track].duration);
+      var location = percent * playlists[current_playlist].tracks[current_track].duration;
+      console.log(location);
+      soundManager.setPosition(playlists[current_playlist].tracks[current_track].tid, location);
     };
 
     /**
@@ -163,6 +182,10 @@ jQuery(document).ready(function () {
     });
 
     return {
+      /**
+       * Set the SoundCloud client ID
+       * @param string cid
+       */
       setClientId : function (cid) {
         if (typeof client_id == 'undefined') {
           client_id = cid;
@@ -172,7 +195,7 @@ jQuery(document).ready(function () {
       },
 
       /**
-      * @param {object} p JavaScript object retrieved from soundcloud
+      * @param object p JavaScript object retrieved from soundcloud
       */
       addPlayer:  function (p) {
         p.pid = 'p' + String(p.id);
@@ -183,7 +206,8 @@ jQuery(document).ready(function () {
         // set up player
         jQuery('.status').remove();
 
-        p.$player = jQuery('#pmsc-' + p.pid);
+        var trackID = '#pmsc-' + p.pid;
+        p.$player = jQuery(trackID);
         p.$controlBox = jQuery('<div class="control-box"></div>');
         p.$controlBox.appendTo(playlists[p.pid].$player);
 
@@ -199,18 +223,21 @@ jQuery(document).ready(function () {
 
         //create track divs
         for (var c = 0; c < p.tracks.length; c = c + 1){
-          var t_html = '<div class="track notplaying" data-track="' + c + '">';
-          t_html += (c + 1) + ') ';
-          t_html += p.tracks[c].title;
-          var duration = p.tracks[c].duration;
+          var $track = jQuery('<div class="track notplaying" data-track="' + c + '"></div>');
+          var t_html = (c + 1) + ') '; //track number
+          t_html += p.tracks[c].title; //track title
+          var duration = p.tracks[c].duration; 
+          t_html += ' (<span class="timeplayed"></span>'  + minSec(duration) + ')'; //track duration
 
-          // controls
-          t_html += ' (<span class="timeplayed"></span>'  + minSec(duration) + ')';
-          t_html += '<div class="total-time"></div>';
-          t_html += '</div>';
-          var $t = jQuery(t_html);
-          $t.appendTo(p.$controlBox);
-          $t.click({track: c}, switchTrack);
+          $track.append(t_html);
+           
+          var $timeline = jQuery('<div class="total-time"></div>');
+          $timeline.click(seek);
+          $track.append($timeline);
+
+          $track.appendTo(p.$controlBox);
+
+          $track.click({track: c}, switchTrack);
 
 
           var $track_controls = jQuery('<div class="track-controls"></div>');
@@ -233,7 +260,7 @@ jQuery(document).ready(function () {
             $track_controls.append($next);
           }
 
-          $t.prepend($track_controls);
+          $track.prepend($track_controls);
         }
       }
     };
